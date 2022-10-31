@@ -14,7 +14,7 @@
             padding: 5px;
         }
         .pHeader{
-            font-size: 30px;
+            font-size: 35px;
         }
         button{
             width: 200px;
@@ -41,47 +41,37 @@
         #mps{
             font-size: 40px;
         }
-        #tickrate{
-            font-size: 40px;
+        #md5,#md6,#md7,#md8{
+            display: none;
         }
     </style>
 </head>
 <body>
     <script type="text/javascript">
+        function prestiges(){
+            window.prestigevar = {prestiges: 0, globalMulti: 1};
+        }
         function variables(){
             window.interval = 1000;
-            window.tickrate = {rate: 1000, cost: 10};
             window.matter = {amount: 10};
             window.matterDimension1 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 10};
             window.matterDimension2 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 100};
             window.matterDimension3 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 1000};
-            window.matterDimension4 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 10000};
-            window.matterDimension5 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 100000};
-            window.matterDimension6 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 1000000};
-            window.matterDimension7 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 10000000};
-            window.matterDimension8 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 100000000};
+            window.matterDimension4 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 100000};
+            window.matterDimension5 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 1000000};
+            window.matterDimension6 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 10000000};
+            window.matterDimension7 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 100000000};
+            window.matterDimension8 = {upgradeLevel: 0, multiplier: 1, amount: 0, cost: 1000000000};
         }
         function returnExp(value) {
-            var newValue = value;
-            if (value >= 1000) {
-                var suffixes = ["","k","m","b","t","qa","qt","sx","sp","oc","non","dec","ud","dd","td","qad","qtd","sxd","spd","ocd","duod"];
-                var suffixNum = Math.floor( (""+value).length/3 );
-                var shortValue = '';
-                for (var precision = 2; precision >= 1; precision--) {
-                    shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
-                    var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
-                if (dotLessShortValue.length <= 2) { break; }
-                }
-            if (shortValue % 1 != 0)  shortValue = shortValue.toFixed(1);
-            newValue = shortValue+suffixes[suffixNum];
+            if(value>10000){
+                value = value.toExponential(2);
             }
-        return newValue;
+        return value;
         }
         function updateDisplay(){
             document.getElementById("currentmatter").innerHTML = "Current Matter: " + returnExp(matter.amount);
-            document.getElementById("mps").innerHTML = "Matter per second: " + returnExp(Math.floor(matterDimension1.amount * matterDimension1.multiplier * 1000 / tickrate.rate));
-            document.getElementById("tickrate").innerHTML = "Tickrate: " + Math.round(tickrate.rate) + "ms";
-            document.getElementById("tickrateUpgrade").innerHTML = "Upgrade tickrate (-5%)<br>Cost: " + returnExp(tickrate.cost);
+            document.getElementById("mps").innerHTML = "Matter per second: " + returnExp(Math.floor(matterDimension1.amount * matterDimension1.multiplier * prestigevar.globalMulti));
             if(matterDimension2.amount>0)document.getElementById("matterDimension1amount").innerHTML = "Amount (+" + (Math.ceil(matterDimension2.amount * matterDimension2.multiplier / (matterDimension1.amount/20))) + "): " + returnExp(matterDimension1.amount);
             else document.getElementById("matterDimension1amount").innerHTML = "Amount: " + returnExp(matterDimension1.amount);
             if(matterDimension3.amount>0)document.getElementById("matterDimension2amount").innerHTML = "Amount (+" + (Math.ceil(matterDimension3.amount * matterDimension3.multiplier / (matterDimension2.amount/20))) + "): " + returnExp(matterDimension2.amount);
@@ -121,15 +111,43 @@
             document.getElementById("matterDimension6UpgLevel").innerHTML = "Upgrade level: " + matterDimension6.upgradeLevel + "/10";
             document.getElementById("matterDimension7UpgLevel").innerHTML = "Upgrade level: " + matterDimension7.upgradeLevel + "/10";
             document.getElementById("matterDimension8UpgLevel").innerHTML = "Upgrade level: " + matterDimension8.upgradeLevel + "/10";
-        }
-        variables();
-        function upgradeTickrate(){
-            if(matter.amount>=tickrate.cost){
-                tickrate.rate *= 0.95;
-                matter.amount -= tickrate.cost;
-                tickrate.cost *= 2;  
+            document.getElementById("prestigesamount").innerHTML = "Prestiges: " + prestigevar.prestiges;
+            document.getElementById("prestigemulti").innerHTML = "Prestige multiplier: " + prestigevar.globalMulti;
+            if(prestigevar.prestiges==0){
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 4 required for prestige: 20"; 
+            }
+            if(prestigevar.prestiges==1){
+                document.getElementById("md5").style.display = "table-row";
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 5 required for prestige: 20"; 
+            }
+            if(prestigevar.prestiges==2){
+                document.getElementById("md5").style.display = "table-row";
+                document.getElementById("md6").style.display = "table-row";
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 6 required for prestige: 20"; 
+            }
+            if(prestigevar.prestiges==3){
+                document.getElementById("md5").style.display = "table-row";
+                document.getElementById("md6").style.display = "table-row";
+                document.getElementById("md7").style.display = "table-row";
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 7 required for prestige: 20"; 
+            }
+            if(prestigevar.prestiges==4){
+                document.getElementById("md5").style.display = "table-row";
+                document.getElementById("md6").style.display = "table-row";
+                document.getElementById("md7").style.display = "table-row";
+                document.getElementById("md8").style.display = "table-row";
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 8 required for prestige: 20"; 
+            }
+            if(prestigevar.prestiges>=5){
+                document.getElementById("md5").style.display = "table-row";
+                document.getElementById("md6").style.display = "table-row";
+                document.getElementById("md7").style.display = "table-row";
+                document.getElementById("md8").style.display = "table-row";
+                document.getElementById("prestigereq").innerHTML = "Matter Dimension 8 required for prestige: " + (20+(prestigevar.prestiges-4)*10);
             }
         }
+        prestiges();
+        variables();
         function upgrade(x){
             switch(x){
                 case 1:
@@ -139,7 +157,7 @@
                         matterDimension1.amount++;
                         if(matterDimension1.upgradeLevel == 10){
                            matterDimension1.upgradeLevel -=10;
-                           matterDimension1.multiplier *=4;
+                           matterDimension1.multiplier *=2;
                            matterDimension1.cost *= 100;
                         }
                     }
@@ -230,10 +248,53 @@
                     break;
             }
         }
-        f1();
-        function f1() {
-            clearInterval(interval);
-            matter.amount += matterDimension1.amount * matterDimension1.multiplier;
+        function prestige(){
+            if(prestigevar.prestiges==0){
+                if(matterDimension4.amount>=20){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+
+                }
+            }
+            else if(prestigevar.prestiges==1){
+                if(matterDimension5.amount>=20){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+                }
+            }
+            else if(prestigevar.prestiges==2){
+                if(matterDimension6.amount>=20){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+                }
+            }
+            else if(prestigevar.prestiges==3){
+                if(matterDimension7.amount>=20){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+                }
+            }
+            else if(prestigevar.prestiges==4){
+                if(matterDimension8.amount>=20){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+                }
+            }
+            else{
+                if(matterDimension8.amount>=(20+(prestigevar.prestiges-4)*10)){
+                    variables();
+                    prestigevar.prestiges++;
+                    prestigevar.globalMulti*=4;
+                }
+            }
+        }
+       window.setInterval(function(){
+            matter.amount += matterDimension1.amount * matterDimension1.multiplier * prestigevar.globalMulti;
             if(matterDimension2.amount>0) matterDimension1.amount += Math.ceil(matterDimension2.amount * matterDimension2.multiplier / (matterDimension1.amount/20));
             if(matterDimension3.amount>0) matterDimension2.amount += Math.ceil(matterDimension3.amount * matterDimension3.multiplier / (matterDimension2.amount/20));
             if(matterDimension4.amount>0) matterDimension3.amount += Math.ceil(matterDimension4.amount * matterDimension4.multiplier / (matterDimension3.amount/20));
@@ -241,8 +302,8 @@
             if(matterDimension6.amount>0) matterDimension5.amount += Math.ceil(matterDimension6.amount * matterDimension6.multiplier / (matterDimension5.amount/20));
             if(matterDimension7.amount>0) matterDimension6.amount += Math.ceil(matterDimension7.amount * matterDimension7.multiplier / (matterDimension6.amount/20));
             if(matterDimension8.amount>0) matterDimension7.amount += Math.ceil(matterDimension8.amount * matterDimension8.multiplier / (matterDimension7.amount/20));
-            interval = setInterval(f1, tickrate.rate);
-         }
+            updateDisplay();
+       }, 1000);
        window.setInterval(function(){
             updateDisplay();
        }, 50);
@@ -253,17 +314,7 @@
                 <td id="currentmatter" class="alignLeft"></td>
                 <td id="mps" class="alignRight"></td>
             </tr>
-            <tr>
-                <td id="tickrate" class="alignLeft"></td>
-                <td class="alignRight"><button id="tickrateUpgrade" onClick="upgradeTickrate()">Upgrade tickrate (-5%)</button></td>
-            </tr>
         </table>
-        <!-- <div id="matter">
-            <p id="currentmatter">0</p>
-            <p id="mps">0</p>
-            <p id="tickrate">0</p><br>
-            <button id="tickrateUpgrade" onClick="upgradeTickrate()">Upgrade tickrate (-5%)</button>
-        </div> -->
     </header>
     <table>
         <tr>
@@ -294,28 +345,28 @@
             <td id="matterDimension4Multiplier"></td>
             <td><button id="matterDimension4Upgrade" onClick="upgrade(4)">Upgrade</button></td>
         </tr>
-        <tr>
+        <tr id="md5">
             <td class="pHeader">Matter Dimension 5</td>
             <td id="matterDimension5amount"></td>
             <td id="matterDimension5UpgLevel"></td>
             <td id="matterDimension5Multiplier"></td>
             <td><button id="matterDimension5Upgrade" onClick="upgrade(5)">Upgrade</button></td>
         </tr>
-        <tr>
+        <tr id="md6">
             <td class="pHeader">Matter Dimension 6</td>
             <td id="matterDimension6amount"></td>
             <td id="matterDimension6UpgLevel"></td>
             <td id="matterDimension6Multiplier"></td>
             <td><button id="matterDimension6Upgrade" onClick="upgrade(6)">Upgrade</button></td>
         </tr>
-        <tr>
+        <tr id="md7">
             <td class="pHeader">Matter Dimension 7</td>
             <td id="matterDimension7amount"></td>
             <td id="matterDimension7UpgLevel"></td>
             <td id="matterDimension7Multiplier"></td>
             <td><button id="matterDimension7Upgrade" onClick="upgrade(7)">Upgrade</button></td>
         </tr>
-        <tr>
+        <tr id="md8">
             <td class="pHeader">Matter Dimension 8</td>
             <td id="matterDimension8amount"></td>
             <td id="matterDimension8UpgLevel"></td>
@@ -323,63 +374,13 @@
             <td><button id="matterDimension8Upgrade" onClick="upgrade(8)">Upgrade</button></td>
         </tr>
     </table>
-    <!-- <div id="mainContainer">
-        <div id="matterDimension1div">
-            <p class="pHeader">Matter Dimension 1</p><br>
-            <p id="matterDimension1amount">0</p>
-            <p id="matterDimension1UpgLevel">0</p>
-            <p id="matterDimension1Multiplier">0</p><br>
-            <button id="matterDimension1Upgrade" onClick="upgrade(1)">Upgrade</button>
-        </div>
-        <div id="matterDimension2div">
-            <p class="pHeader">Matter Dimension 2</p><br>
-            <p id="matterDimension2amount">0</p>
-            <p id="matterDimension2UpgLevel">0</p>
-            <p id="matterDimension2Multiplier">0</p><br>
-            <button id="matterDimension2Upgrade" onClick="upgrade(2)">Upgrade</button>
-        </div>
-        <div id="matterDimension3div">
-            <p class="pHeader">Matter Dimension 3</p><br>
-            <p id="matterDimension3amount">0</p>
-            <p id="matterDimension3UpgLevel">0</p>
-            <p id="matterDimension3Multiplier">0</p><br>
-            <button id="matterDimension3Upgrade" onClick="upgrade(3)">Upgrade</button>
-        </div>
-        <div id="matterDimension4div">
-            <p class="pHeader">Matter Dimension 4</p><br>
-            <p id="matterDimension4amount">0</p>
-            <p id="matterDimension4UpgLevel">0</p>
-            <p id="matterDimension4Multiplier">0</p><br>
-            <button id="matterDimension4Upgrade" onClick="upgrade(4)">Upgrade</button>
-        </div>
-        <div id="matterDimension5div">
-            <p class="pHeader">Matter Dimension 5</p><br>
-            <p id="matterDimension5amount">0</p>
-            <p id="matterDimension5UpgLevel">0</p>
-            <p id="matterDimension5Multiplier">0</p><br>
-            <button id="matterDimension5Upgrade" onClick="upgrade(5)">Upgrade</button>
-        </div>
-        <div id="matterDimension6div">
-            <p class="pHeader">Matter Dimension 6</p><br>
-            <p id="matterDimension6amount">0</p>
-            <p id="matterDimension6UpgLevel">0</p>
-            <p id="matterDimension6Multiplier">0</p><br>
-            <button id="matterDimension6Upgrade" onClick="upgrade(6)">Upgrade</button>
-        </div>
-        <div id="matterDimension7div">
-            <p class="pHeader">Matter Dimension 7</p><br>
-            <p id="matterDimension7amount">0</p>
-            <p id="matterDimension7UpgLevel">0</p>
-            <p id="matterDimension7Multiplier">0</p><br>
-            <button id="matterDimension7Upgrade" onClick="upgrade(7)">Upgrade</button>
-        </div>
-        <div id="matterDimension8div">
-            <p class="pHeader">Matter Dimension 8</p><br>
-            <p id="matterDimension8amount">0</p>
-            <p id="matterDimension8UpgLevel">0</p>
-            <p id="matterDimension8Multiplier">0</p><br>
-            <button id="matterDimension8Upgrade" onClick="upgrade(8)">Upgrade</button>
-        </div>
-    </div> -->
+    <table>
+        <tr>
+            <td id="prestigesamount">0</td>
+            <td id="prestigemulti">0</td>
+            <td id="prestigereq">-</td>
+            <td><button id="buyprestige" onClick="prestige()">Prestige</button></td>
+        </tr>
+    </table>
 </body>
 </html>
